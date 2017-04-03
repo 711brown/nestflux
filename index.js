@@ -52,15 +52,16 @@ nest.login(username, password, function (err, data) {
         addInfluxPoint(data.device[device], 'learning_days_completed_heat', null, influxData)
 
         addInfluxPoint(data.shared[device], 'target_temperature', null, influxData, fToC)
+        addInfluxPoint(data.shared[device], 'target_temperature_high', null, influxData, fToC)
+        addInfluxPoint(data.shared[device], 'target_temperature_low', null, influxData, fToC)
+
         addInfluxPoint(data.shared[device], 'current_temperature', null, influxData, fToC)
         addInfluxPoint(data.shared[device], 'auto_away', 'auto_away_on', influxData)
-        addInfluxPoint(data.shared[device], 'hvac_heater_state', 'heater_on', influxData, function (value) {
-            if (value) {
-                return 1
-            }
+        addInfluxPoint(data.shared[device], 'hvac_heater_state', 'heater_on', influxData, function (value) {return value ? 1 : 0})
+        addInfluxPoint(data.shared[device], 'hvac_fan_state', 'fan_on', influxData, function (value) {return value ? 1 : 0})
+        addInfluxPoint(data.shared[device], 'hvac_ac_state', 'ac_on', influxData, function (value) {return value ? 1 : 0})
 
-            return 0
-        })
+        addInfluxPoint(data.shared[device], 'target_temperature_type', null, influxData)
 
         console.log(JSON.stringify(influxData))
         postInfluxData(influxData, function () {
